@@ -143,4 +143,5 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
         metrics = {}
     return metrics
 ```
-By documenting your prompt engineering process in this manner, you provide clear insights into how AI tools were used to assist with your project and how the prompts were iteratively improved for better results.
+In this project, prompt engineering played a crucial role in generating and refining the necessary functions and processes for model evaluation. By iteratively improving the clarity and specificity of the prompts, we were able to generate code that accurately loads test data, evaluates models, and computes essential performance metrics, such as accuracy, ROC-AUC, precision, recall, and F1 score. The effectiveness of the prompts was evident in the comprehensive and functional code produced, ensuring seamless integration of the models into the evaluation pipeline. Additionally, the prompts facilitated the incorporation of error handling and improved documentation, enhancing both the robustness and maintainability of the resulting code. Ultimately, prompt engineering allowed us to optimize the evaluation process and ensure that the models were assessed effectively against the test data, leading to a clearer understanding of their performance.
+
