@@ -113,7 +113,9 @@ async def predict(data: PatientData):
     return {"prediction": result}
     
     
-    
-    
+if __name__ == "__main__":
+    print("Starting backend server with uvicorn...")
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
 
