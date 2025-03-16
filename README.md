@@ -73,7 +73,9 @@ Future improvements include integrating real-time patient data updates, refining
 
 ```plaintext
 Generate a function to evaluate a model on test data and return performance metrics.
-Result:
+## Result:
+
+```python
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     """
     Evaluate a model on the test set and return performance metrics.
@@ -93,16 +95,22 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     }
     return metrics
 
-Effectiveness of Prompts:
+
+## Effectiveness of Prompts:
+
 The prompt was effective in generating a function that evaluates a model on test data and returns performance metrics. The generated function includes the necessary steps to reindex features, make predictions, and calculate various performance metrics such as accuracy, ROC-AUC, precision, recall, and F1 score.
 
-Potential Improvements:
-Prompt Specificity: The prompt could be more specific by mentioning the exact metrics required or any additional functionality needed.
-Error Handling: The generated function could include more robust error handling to manage potential issues during evaluation.
-Documentation: Ensure that the generated function includes comprehensive docstrings and comments for better readability and maintainability.
-Improved Prompt:
+## Potential Improvements:
+
+- **Prompt Specificity**: The prompt could be more specific by mentioning the exact metrics required or any additional functionality needed.
+- **Error Handling**: The generated function could include more robust error handling to manage potential issues during evaluation.
+- **Documentation**: Ensure that the generated function includes comprehensive docstrings and comments for better readability and maintainability.
+
+## Improved Prompt:
+
 Generate a function to evaluate a model on test data, including accuracy, ROC-AUC, precision, recall, and F1 score metrics. Ensure the function handles potential errors and includes detailed docstrings.
 
+```python
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     """
     Evaluate a model on the test set and return performance metrics.
@@ -133,6 +141,5 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
         print(f"Error during model evaluation: {e}")
         metrics = {}
     return metrics
-
+    
 By documenting your prompt engineering process in this manner, you provide clear insights into how AI tools were used to assist with your project and how the prompts were iteratively improved for better results.
-
