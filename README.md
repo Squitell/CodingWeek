@@ -1,65 +1,90 @@
 # Medical Decision Support Application
 
-## Project Report
+# Predicting Pediatric Bone Marrow Transplant Success
 
-### Introduction
+## Introduction
 
-This project focuses on developing a decision-support application designed to assist physicians in predicting the success rate of pediatric bone marrow transplants. The primary goal is to create a reliable and explainable machine learning model that ensures transparency in medical predictions. By leveraging advanced AI techniques, we aim to enhance the decision-making process for medical professionals and ultimately improve patient outcomes.
+This project focuses on developing a decision-support application designed to assist physicians in predicting the success rate of pediatric bone marrow transplants. The primary goal is to create a reliable and explainable machine learning model that ensures transparency in medical predictions. By leveraging advanced AI techniques, we aim to improve the decision-making process for medical professionals and ultimately enhance patient outcomes.
 
-### Objectives
+## Objectives
 
 The main objectives of this project are:
 
 - Develop an explainable machine learning model to predict transplant success based on patient data.
-- Ensure transparency through SHAP (SHapley Additive exPlanations)-based interpretability techniques, helping medical professionals understand the AI’s decision-making process.
-- Build a user-friendly interface using Streamlit or Flask to provide an accessible and intuitive experience for users.
-- Implement professional software development practices, including GitHub for version control and CI/CD automation for seamless deployment.
-- Explore prompt engineering by documenting AI-generated prompts used in the workflow to refine model responses and improve accuracy.
+- Ensure transparency using SHAP (SHapley Additive exPlanations) techniques to help medical professionals understand the AI’s decision-making process.
+- Build an intuitive user interface using Streamlit or Flask to provide easy access for users.
+- Implement best software development practices with version control and CI/CD automation.
+- Explore prompt engineering to improve the AI-generated prompts for model performance refinement.
 
-### Dataset Used
+## Dataset Overview
 
-The dataset used in this project is the **Bone Marrow Transplant Children Dataset**, which contains patient-specific features, medical history, and post-transplant outcomes. This data serves as a crucial factor for training and evaluating the machine learning model.
+The **Bone Marrow Transplant Children Dataset** was used, containing various patient-specific features, medical history, and post-transplant outcomes. This dataset is crucial for training and evaluating the machine learning model.
 
-### Data Processing and Analysis
+## Data Processing and Preprocessing
 
-To ensure data quality and improve model performance, the following preprocessing steps were undertaken:
+Several preprocessing steps were implemented to enhance the model’s performance:
 
-1. **Handling Missing Values**: Missing values were handled using mean imputation for numerical data and mode imputation for categorical data.
-2. **Feature Selection**: A correlation analysis was conducted to identify the most significant features influencing transplant success.
-3. **Data Normalization**: Continuous variables were normalized to ensure consistency across different scales.
-4. **Train-Test Splitting**: The dataset was split into training and testing sets to evaluate model performance effectively.
+- **Handling Missing Values**: Imputation was used to address missing values—mean for numerical data and mode for categorical data.
+- **Feature Selection**: A correlation analysis was conducted to identify the most significant features affecting transplant success.
+- **Data Normalization**: Continuous variables were normalized for consistency across different scales.
+- **Train-Test Splitting**: The dataset was split into training and testing sets to evaluate model performance effectively.
 
-### Model Development
+## Model Development
 
-The machine learning model was developed using Python and various AI libraries, including:
+Machine learning models were developed using Python libraries such as:
 
-- **Scikit-learn** for baseline models such as logistic regression, decision trees, and random forests.
-- **XGBoost** for improved predictive performance.
-- **SHAP** for model interpretability, allowing clinicians to understand the importance of each feature in predicting transplant outcomes.
-- **TensorFlow/Keras** for deep learning experiments to explore more complex patterns in the data.
+- **Scikit-learn** for baseline models like logistic regression, decision trees, and random forests.
+- **XGBoost** for enhanced predictive performance.
+- **SHAP** for model interpretability, helping clinicians understand how each feature contributes to transplant success predictions.
+- **TensorFlow/Keras** was explored for deep learning experiments to identify more complex patterns in the data.
 
-### Model Evaluation
+## Model Evaluation
 
-The following metrics were used to assess model performance:
+The following metrics were used to evaluate model performance:
 
-- **Accuracy**: Measures the percentage of correctly classified instances.
-- **Precision & Recall**: Evaluates the model's ability to correctly identify successful and unsuccessful transplants.
-- **F1 Score**: Balances precision and recall for a more comprehensive evaluation.
-- **ROC-AUC Score**: Assesses the model’s ability to distinguish between different outcome classes.
+- **Accuracy**: Proportion of correctly predicted instances.
+- **Precision & Recall**: Measures the model’s ability to identify successful and unsuccessful transplants.
+- **F1 Score**: A balanced metric between precision and recall.
+- **ROC-AUC Score**: Assesses the model’s ability to distinguish between transplant outcome classes.
 
-### Deployment & User Interface
+## Results
 
-A web-based application was developed to provide an interactive platform for clinicians. The interface was built using:
+- **Class Imbalance**: The dataset was imbalanced. Techniques such as SMOTE or class weighting were applied to improve the balance, leading to improved model generalization and fairness in predictions.
+- **Best Model Performance**: Random Forest was identified as the best-performing model, with the following metrics:
+  - Train Accuracy: 1.0
+  - Train ROC-AUC: 1.0
+  - Validation Accuracy: 0.939
+  - Validation ROC-AUC: 0.981 (highest among models)
+- **SHAP Insights**: The top influential features according to SHAP were:
+  - **Donor Age**: Younger donors led to better outcomes.
+  - **Recipient CMV Status**: Negative CMV status improved transplant success.
+  - **Stem Cell Source**: Peripheral blood stem cells resulted in better outcomes.
 
-- **Streamlit** for a lightweight, interactive dashboard.
-- **Flask** for backend API integration.
-- **Docker** for containerized deployment to ensure scalability and portability.
+## Prompt Engineering Insights
 
-### Conclusion
+Prompt engineering significantly contributed to the following improvements:
 
-This project demonstrates the potential of AI-driven decision support systems in the medical field. By incorporating explainable machine learning techniques, we aim to build trust and transparency in AI-powered predictions, ultimately assisting physicians in making informed decisions for pediatric bone marrow transplant patients.
+- **Improved SHAP Explanations**: The decision-making process of the model became clearer, helping clinicians better understand model predictions.
+- **Refined Data Preprocessing & Feature Selection**: Better strategies for data preprocessing and feature selection were implemented, which enhanced model performance.
+- **Enhanced Interpretability**: The insights helped in refining the model’s interpretability, fostering better communication between clinicians and the AI system.
 
-Future improvements include integrating real-time patient data updates, refining model accuracy with larger datasets, and expanding the application to other medical prediction scenarios.
+## Deployment & User Interface
+
+A user-friendly, web-based application was developed to provide an interactive platform for clinicians. The interface was built using:
+
+- **Streamlit**: For creating an interactive dashboard.
+- **Flask**: For backend API integration.
+- **Docker**: For containerized deployment, ensuring scalability and portability.
+
+## Conclusion
+
+This project demonstrates the potential of AI-driven decision support systems in the medical field. By incorporating explainable machine learning techniques, we aim to foster transparency and build trust in AI-powered predictions, ultimately assisting physicians in making informed decisions for pediatric bone marrow transplant patients. 
+
+**Future Improvements**:
+- Integrating real-time patient data updates.
+- Refining model accuracy with larger datasets.
+- Expanding the application to other medical prediction scenarios.
+
 
 ---
 
