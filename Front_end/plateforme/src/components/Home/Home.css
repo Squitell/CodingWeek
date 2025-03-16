@@ -1,0 +1,158 @@
+/* Home Page Styles */
+.home-container  {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 80px;
+    background: #e9f9e9;
+    color: #95ffc3;
+    min-height: 100vh;
+  }
+  
+  /* Text Content with animations */
+  .text-content {
+    max-width: 50%;
+    animation: slideInLeft 1s ease-out;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  h1 {
+    font-size: 2.8rem;
+    font-weight: bold;
+    background: linear-gradient(to right, #575f5d, #1abc9c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .highlight {
+    color: #16a085;
+    font-weight: bold;
+    position: relative;
+  }
+
+  .highlight::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #16a085;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .highlight:hover::after {
+    transform: scaleX(1);
+  }
+  
+  p {
+    font-size: 1rem;
+    margin-top: 15px;
+    line-height: 1.6;
+  }
+  
+  /* Statistics with hover effects */
+  .stats {
+    position: relative;
+    top: 0.32rem;
+    z-index: 2;
+    width: 1400px;;
+    height: 70px;
+    display: flex;
+    background: linear-gradient(to right, #575f5d, #1abc9c);;
+    gap: 40px;
+    margin-top: 25px;
+    margin-left: -80px;
+  }
+  
+  .stat-item {
+    text-align: center;
+    background: linear-gradient(to right, #575f5d, #1abc9c);
+    transition: transform 0.3s ease;
+    position: relative;
+    top: 0.3rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    left: 4rem;
+    font-size: 3.1rem;
+  }
+
+  .stat-item:hover {
+    transform: translateY(-5px);
+  }
+  
+  .text-content >h1 {
+    position: relative;
+    top: -2rem;
+  }
+  
+  
+  
+  /* Doctor Image Section with animations */
+  .image-container {
+    position: relative;
+    top: -5rem;
+    right: 1rem;
+    width: 350px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 1s ease-out;
+  }
+  
+  .circle-bg {
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    background: #adf1ad;
+    border-radius: 50%;
+    z-index: 1;
+    transition: transform 0.5s ease;
+  }
+
+  .circle-bg:hover{
+    transform: scale(1.1);
+  }
+  
+  .doctor-image {
+    width: 130%;
+    position: relative;
+    z-index: 2;
+    /* border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); */
+    transition: transform 0.5s ease;
+  }
+
+  
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .stat-item {
+    border-right: 0.1em solid #95ffc3;
+    
+    white-space: nowrap;
+    overflow: hidden;
+    display:flex;
+    animation: blink-caret 0.50s step-end infinite;
+  }

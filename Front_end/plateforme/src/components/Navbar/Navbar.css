@@ -1,0 +1,161 @@
+.Navbar{
+    background: #e9f9e9;
+    height: 5rem;
+    width: 170vw;
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between ;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+.logo{
+    object-fit: cover;
+    position: relative;
+    top: 0.2rem;
+    right: -2.5rem;
+    height: 6rem;
+    width: 7rem;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.logo:hover{
+    transform: scale(1.1); /* Increase the size on hover */
+}
+
+.desktopMenu{
+    display: flex;
+    position: relative;
+    left: -14rem;
+    list-style-type: none;
+}
+
+.desktopMenuLinkItem{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin: 1rem;
+    cursor: pointer;
+    color: black;
+
+
+}
+
+.desktopMenuBtn{
+    border: none;
+    color: black;
+    cursor: pointer;
+    display: inline;
+}
+
+.desktopMenuLinkItem:hover{
+    color: rgb(127, 244, 172);
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid rgb(127, 244, 172);
+}
+
+
+
+.desktopMenuText{
+    position: relative;
+    top: -45px;
+    right: 113px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: large;
+
+}
+
+.desktopMenuText:hover{
+    color: rgb(0, 0, 0);
+}
+
+.desktopMenuImg{
+    position: relative;
+    top: 0.5rem;
+    height: 9rem;
+    width: 12rem;
+    margin: 1rem;
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.desktopMenuImg:hover {
+  transform: scale(1.1); /* Increase the size on hover */
+}
+
+
+
+/* Mobile Menu */
+.mobileMenu {
+    display: none;
+    flex-direction: column;
+    background-color: rgb(30, 30, 30);
+    position: absolute;
+    top: 5rem;
+    right: 0;
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+    z-index: 2;
+  }
+  
+  .mobileMenu.open {
+    display: flex;
+  }
+  
+  .mobileMenuLinkItem {
+    padding: 1rem;
+    cursor: pointer;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+
+  .mobileMenuLinkItem:hover{
+    color: rgb(95, 95, 95);
+    padding-bottom: 0.5rem;
+    border-bottom: 3px;
+}
+  
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 0.3rem;
+    z-index: 3;
+  }
+  
+  .hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+  }
+  
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .desktopMenu,
+    .desktopMenuBtn {
+      display: none;
+    }
+  
+    .hamburger {
+      display: flex;
+    }
+  }
+  .mobileMenuBtn {
+    border: none;
+    color: black;
+    cursor: pointer;
+    display: inline;
+    margin-top: 0rem; /* Add margin to separate from the menu items */
+  }
+
+  .mobileMenuImg {
+    height: 6rem;
+    width: 7rem;
+    transition: transform 0.3s ease;
+  }
+
+  .mobileMenuImg:hover {
+    transform: scale(1.1);
+  }
