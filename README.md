@@ -71,10 +71,10 @@ Future improvements include integrating real-time patient data updates, refining
 
 **Prompt 1**: Generate a function to evaluate a model on test data
 
-```plaintext
+
 Generate a function to evaluate a model on test data and return performance metrics.
 ## Result:
-
+```plaintext
 ```python
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     """
@@ -94,7 +94,7 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
         "F1": f1_score(y_test, y_pred, zero_division=0)
     }
     return metrics
-
+```
 
 ## Effectiveness of Prompts:
 
@@ -109,6 +109,7 @@ The prompt was effective in generating a function that evaluates a model on test
 ## Improved Prompt:
 
 Generate a function to evaluate a model on test data, including accuracy, ROC-AUC, precision, recall, and F1 score metrics. Ensure the function handles potential errors and includes detailed docstrings.
+
 
 ```python
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
@@ -141,5 +142,5 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
         print(f"Error during model evaluation: {e}")
         metrics = {}
     return metrics
-    
+```
 By documenting your prompt engineering process in this manner, you provide clear insights into how AI tools were used to assist with your project and how the prompts were iteratively improved for better results.
