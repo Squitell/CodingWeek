@@ -49,10 +49,3 @@ This project demonstrates the potential of AI-driven decision support systems in
 
 Future improvements include integrating real-time patient data updates, refining model accuracy with larger datasets, and expanding the application to other medical prediction scenarios.
 
----
-
-### References
-- Lundberg, S. M., & Lee, S. I. (2017). A Unified Approach to Interpretable Model Predictions.
-- Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python.
-- TensorFlow Team (2023). TensorFlow Documentation.
-
