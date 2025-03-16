@@ -102,7 +102,7 @@ async def predict(data: PatientData):
     if prediction == 1:
         result = "Survive"
     elif prediction == 0:
-        result = "Not Survive"cd
+        result = "Not Survive"
     else:
         result = "❌ Error: Unexpected Prediction Value"
 
