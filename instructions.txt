@@ -1,0 +1,48 @@
+# My Application
+
+This project is a web application with a FastAPI backend that performs predictions using a pre-trained machine learning model and a React frontend that collects patient information.
+
+## Overview
+
+- **Backend:**  
+  Built with FastAPI. It loads a pre-trained model (e.g., LightGBM) and exposes an endpoint (`/predict`) for predictions.
+- **Frontend:**  
+  Built with React. It allows users to enter patient data and submit it to the backend for prediction.
+
+## Prerequisites
+
+- **Python:** Version 3.8+ (Python 3.10 is recommended for compatibility)
+- **Node.js:** Latest LTS version
+- **Git:** For cloning the repository (optional)
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+Open a terminal and clone the repository:
+```bash
+git clone https://github.com/yourusername/your-repo.git
+cd your-repo
+
+2. Backend Setup
+ 
+a. Navigate to the Backend Directory:
+    cd Back_end
+b. Create and Activate a Virtual Environment:
+    python -m venv venv
+    .\venv\Scripts\activate
+c.Install Python Dependencies:
+    pip install -r requirements.txt
+d. Run the Backend Server
+    python main.py
+After running, you should see messages similar to:
+    INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+
+3. Frontend Setup
+
+a. Navigate to the Frontend Directory
+    cd Front_end/plateforme
+b. Install Node Dependencies
+    npm install
+c. Run the Frontend Development Server
+    npm start

@@ -102,7 +102,7 @@ async def predict(data: PatientData):
     if prediction == 1:
         result = "Survive"
     elif prediction == 0:
-        result = "Not Survive"cd
+        result = "Not Survive"
     else:
         result = "❌ Error: Unexpected Prediction Value"
 
@@ -113,7 +113,9 @@ async def predict(data: PatientData):
     return {"prediction": result}
     
     
-    
-    
+if __name__ == "__main__":
+    print("Starting backend server with uvicorn...")
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
 
