@@ -74,7 +74,7 @@ Future improvements include integrating real-time patient data updates, refining
 
 Generate a function to evaluate a model on test data and return performance metrics.
 ## Result:
-```plaintext
+
 ```python
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     """
