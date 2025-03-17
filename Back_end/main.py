@@ -69,7 +69,7 @@ async def predict(data: PatientData):
     disease_encoded = disease_mapping.get(data.Disease, -1)
     
     
-    feature_names = model.feature_name_
+    feature_names = model.feature_names_in
 
 # Convert input to DataFrame with correct feature names
     input_data = pd.DataFrame([[
