@@ -26,7 +26,8 @@ def save_plot(filename: str) -> None:
     filepath = os.path.join(plots_dir, filename)
     plt.savefig(filepath, bbox_inches="tight")
     print(f"Plot saved to: {filepath}")
-    plt.show()  # Blocks until the figure window is closed
+    if plt.get_backend().lower() not in ["agg", "pdf", "svg", "ps"]:
+        plt.show()
     plt.close()
 
 def load_data(relative_path: str) -> pd.DataFrame:
@@ -78,7 +79,8 @@ def plot_boxplot(df: pd.DataFrame) -> None:
     Create a box plot for 'Donorage' by 'Stemcellsource'.
     """
     plt.figure(figsize=(6, 4))
-    sns.boxplot(data=df, x='Stemcellsource', y='Donorage')
+    sns.boxplot(data=df, x='Stemcellsource', y='Donorage', orientation='vertical')
+
     plt.title('Boxplot of Donorage by Stemcellsource')
     save_plot("boxplot_donorage_by_stemcellsource.png")
 
@@ -213,7 +215,7 @@ def plot_boxplot_cd34_by_recipientgender(df: pd.DataFrame) -> None:
     Create a box plot for 'CD34kgx10d6' by 'Recipientgender'.
     """
     plt.figure(figsize=(6, 4))
-    sns.boxplot(data=df, x='Recipientgender', y='CD34kgx10d6')
+    sns.boxplot(data=df, x='Recipientgender', y='CD34kgx10d6', orientation='vertical')
     plt.title('Boxplot of CD34+ Cell Dose by Recipient Gender')
     save_plot("boxplot_cd34_by_recipientgender.png")
 
