@@ -79,8 +79,7 @@ def plot_boxplot(df: pd.DataFrame) -> None:
     Create a box plot for 'Donorage' by 'Stemcellsource'.
     """
     plt.figure(figsize=(6, 4))
-    sns.boxplot(data=df, x='Stemcellsource', y='Donorage', orientation='vertical')
-
+    sns.boxplot(data=df, x='Stemcellsource', y='Donorage', orient='v')  # ✅ Fixed orient argument
     plt.title('Boxplot of Donorage by Stemcellsource')
     save_plot("boxplot_donorage_by_stemcellsource.png")
 
