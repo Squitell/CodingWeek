@@ -20,7 +20,29 @@ The main objectives of this project are:
 
 The **Bone Marrow Transplant Children Dataset** was used, containing various patient-specific features, medical history, and post-transplant outcomes. This dataset is crucial for training and evaluating the machine learning model.
 
+<<<<<<< Updated upstream
 ## Data Processing and Preprocessing
+=======
+📂 CodingWeek_Grp8/
+│── 📂 .venv/                     # Virtual environment
+│── 📂 Back_end/                  # Backend API and related files
+│   │── main.py                  # FastAPI backend for handling predictions
+│   │── requirements.txt          # Dependencies for backend
+│── 📂 machine_learning/           # Machine learning pipeline
+│   │── 📂 data/                   # Processed datasets used for training/testing
+│   │── 📂 feature_importance_plots/  # Feature importance visualizations
+│   │── 📂 imbalance_plots/         # Class imbalance handling visualizations
+│   │── 📂 model_performance/       # Model evaluation results
+│   │── 📂 models/                  # Trained ML models
+│   │── 📂 notebooks/               # Exploratory data analysis (EDA) & experiments
+│   │── 📂 plots/                   # Data visualization & SHAP analysis results
+│   │── 📂 shap_analysis/           # SHAP interpretability analysis
+│   │── 📂 src/                     # Machine learning scripts
+│   │── 📂 tests/                   # Unit tests for ML components               
+│── 📂 Front_end/                   # React frontend for user interaction
+│── instructions.txt                # Steps to run the application
+│── README.md                       # Project overview and theoretical documentation
+>>>>>>> Stashed changes
 
 Several preprocessing steps were implemented to enhance the model’s performance:
 
@@ -170,3 +192,7 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
 ```
 In this project, prompt engineering played a crucial role in generating and refining the necessary functions and processes for model evaluation. By iteratively improving the clarity and specificity of the prompts, we were able to generate code that accurately loads test data, evaluates models, and computes essential performance metrics, such as accuracy, ROC-AUC, precision, recall, and F1 score. The effectiveness of the prompts was evident in the comprehensive and functional code produced, ensuring seamless integration of the models into the evaluation pipeline. Additionally, the prompts facilitated the incorporation of error handling and improved documentation, enhancing both the robustness and maintainability of the resulting code. Ultimately, prompt engineering allowed us to optimize the evaluation process and ensure that the models were assessed effectively against the test data, leading to a clearer understanding of their performance.
 
+<<<<<<< Updated upstream
+=======
+-------📌 For setup and execution steps, refer to instructions.txt.-------
+>>>>>>> Stashed changes
