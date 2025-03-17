@@ -1,0 +1,22 @@
+Dans le cadre de ce projet, la construction et l’optimisation des prompts
+jouent un rôle fondamental dans l’exécution efficace des différentes étapes, 
+allant du nettoyage des données à l’implémentation du modèle et son intégration
+dans une plateforme interactive. Un prompt bien conçu garantit une communication
+claire et précise avec les outils d’IA, ce qui permet d’obtenir des réponses
+pertinentes, d’améliorer la qualité des données traitées et de renforcer 
+la performance du modèle déployé.
+En intégrant cette approche, nous avons pu structurer notre flux de travail de manière optimale, 
+en assurant une interaction fluide entre l’IA et les utilisateurs finaux. Ce livrable met ainsi 
+en lumière l’importance du prompt engineering dans le  développement et l’exploitation 
+des modèles d’IA appliqués aux données.
+
+Voici les liens de certaines discussions des membres du groupe avec Chat GPT :
+
+https://chatgpt.com/share/67d8aaf3-9d00-8007-9052-ee2eb3355460
+https://chatgpt.com/share/67d8aa0e-2d8c-8007-850a-e51c261e9b2c
+https://chatgpt.com/share/67d8aba1-bde0-8007-a44d-61a2d7a161c1
+https://chatgpt.com/share/67d8abdc-4968-8007-ad3b-c251b5059763
+
+Ces discussions avec ChatGPT ont permis de résoudre certains problèmes techniques rencontrés 
+mais ils ont également proposé certaines idées afin d'améliorer les codes. 
+
