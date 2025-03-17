@@ -14,7 +14,8 @@ Ensure you are in the `Back_end/machine_learning` folder:
 
 ### ➤ 1.2 Create & Activate a Virtual Environment
 
-        python -m venv .venv source
+        python -m venv .venv 
+        .venv/bin/activate
 
 
 ### ➤ 1.3 Install Dependencies
