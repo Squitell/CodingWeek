@@ -10,7 +10,7 @@ import pytest
 # Add the notebooks directory to sys.path so that eda.py can be imported.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'notebooks')))
 
-import eda  # Now eda.py from the notebooks folder is imported.
+from notebooks import eda  # Now eda.py from the notebooks folder is imported.
 
 # Fixture to override the global plots directory to a temporary directory.
 @pytest.fixture(autouse=True)
