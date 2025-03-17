@@ -7,9 +7,9 @@ This application consists of a **FastAPI backend** and a **React frontend** to p
 The backend handles API requests, processes input data, and makes predictions using a trained **LightGBM model**.
 
 ### ➤ 1.1 Navigate to the Backend Directory
-Ensure you are in the `Back_end/machine_learning` folder:
+Ensure you are in the `Back_end` folder:
 
-        cd Back_end/machine_learning
+        cd Back_end
 
 
 ### ➤ 1.2 Create & Activate a Virtual Environment
