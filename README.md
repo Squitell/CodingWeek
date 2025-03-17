@@ -16,12 +16,6 @@ Provide a front-end application for user interaction with predictions.
 
 ➤ 3. Project Structure
 
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-## Data Processing and Preprocessing
-=======
->>>>>>> hamza
 📂 CodingWeek_Grp8/
 │── 📂 .venv/                     # Virtual environment
 │── 📂 Back_end/                  # Backend API and related files
@@ -37,18 +31,11 @@ Provide a front-end application for user interaction with predictions.
 │   │── 📂 plots/                   # Data visualization & SHAP analysis results
 │   │── 📂 shap_analysis/           # SHAP interpretability analysis
 │   │── 📂 src/                     # Machine learning scripts
-<<<<<<< HEAD
-│   │── 📂 tests/                   # Unit tests for ML components
-│── 📂 Front_end/                   # React frontend for user interaction
-│── instructions.txt                # Steps to run the application
-│── README.md                       # Project overview and theoretical documentation
-=======
 │   │── 📂 tests/                   # Unit tests for ML components               
 │── 📂 Front_end/                   # React frontend for user interaction
 │── instructions.txt                # Steps to run the application
 │── README.md                       # Project overview and theoretical documentation
->>>>>>> Stashed changes
->>>>>>> hamza
+
 
 ➤ 4. Machine Learning Components
 
