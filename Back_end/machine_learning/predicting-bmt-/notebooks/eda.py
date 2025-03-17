@@ -12,33 +12,22 @@ try:
 except ImportError:
     HAS_SQUARIFY = False
 
-# Create the "plots" folder if it doesn't exist
-plots_dir = "plots"
+# Set up the "plots" folder relative to this script's location (machine_learning folder)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+plots_dir = os.path.join(script_dir, "plots")
 if not os.path.exists(plots_dir):
     os.makedirs(plots_dir)
 
-def maybe_show():
-    """
-    Call plt.show() only if the current backend is interactive.
-    Non-interactive backends include 'Agg', 'pdf', 'svg', and 'ps'.
-    """
-    backend = matplotlib.get_backend()
-    interactive_backends = ["Qt5Agg", "TkAgg", "WXAgg", "MacOSX"]
-    if backend in interactive_backends:
-        plt.show()
-    else:
-        # Instead of showing, just close the figure to free memory.
-        plt.close()
-
 def save_plot(filename: str) -> None:
     """
-    Save the current matplotlib figure to the plots folder.
-    Then call maybe_show() so that plt.show() is only invoked on interactive backends.
+    Save the current matplotlib figure to the plots folder,
+    display it (blocking) until the user closes it, and then close the figure.
     """
     filepath = os.path.join(plots_dir, filename)
     plt.savefig(filepath, bbox_inches="tight")
     print(f"Plot saved to: {filepath}")
-    maybe_show()
+    plt.show()  # Blocks until the figure window is closed
+    plt.close()
 
 def load_data(relative_path: str) -> pd.DataFrame:
     """
@@ -138,9 +127,9 @@ def plot_treemap(df: pd.DataFrame) -> None:
     sizes = disease_counts.values
 
     plt.figure(figsize=(8, 6))
-    # Use the updated colormap API to avoid deprecation warnings:
     cmap = matplotlib.colormaps.get_cmap("viridis")
-    squarify.plot(sizes=sizes, label=labels, alpha=0.8, color=cmap(np.linspace(0, 1, len(sizes))))
+    squarify.plot(sizes=sizes, label=labels, alpha=0.8,
+                   color=cmap(np.linspace(0, 1, len(sizes))))
     plt.title('Treemap of Disease Distribution')
     plt.axis('off')
     save_plot("treemap_disease.png")
@@ -176,23 +165,83 @@ def plot_correlation_matrix(df: pd.DataFrame) -> None:
     corr_matrix = df[numeric_cols].corr()
 
     plt.figure(figsize=(16, 12))
-    ax = sns.heatmap(
-        corr_matrix, 
-        annot=True,      
-        cmap="YlGnBu",   
-        fmt=".2f",       
-        annot_kws={"size": 8}  
-    )
+    sns.heatmap(corr_matrix, annot=True, cmap="YlGnBu", fmt=".2f",
+                annot_kws={"size": 8})
     plt.title("Correlation Matrix for Numeric Attributes", fontsize=14)
     plt.xticks(rotation=45, ha="right")
     plt.yticks(rotation=0)
     plt.tight_layout()
     save_plot("correlation_matrix.png")
 
+# --- Additional Useful Plots ---
+
+def plot_violin(df: pd.DataFrame) -> None:
+    """
+    Create a violin plot for 'Donorage' by 'Recipientgender'.
+    """
+    plt.figure(figsize=(6, 4))
+    sns.violinplot(data=df, x='Recipientgender', y='Donorage')
+    plt.title('Violin Plot of Donor Age by Recipient Gender')
+    save_plot("violin_donorage_recipientgender.png")
+
+def plot_jointplot(df: pd.DataFrame) -> None:
+    """
+    Create a joint plot for 'Donorage' vs. 'CD34kgx10d6' with a regression line.
+    """
+    jp = sns.jointplot(data=df, x='Donorage', y='CD34kgx10d6', kind='reg', height=6)
+    jp.fig.suptitle('Joint Plot: Donor Age vs. CD34+ Cell Dose')
+    jp.fig.subplots_adjust(top=0.93)
+    jointplot_filepath = os.path.join(plots_dir, "jointplot_donorage_cd34.png")
+    jp.fig.savefig(jointplot_filepath, bbox_inches="tight")
+    print(f"Plot saved to: {jointplot_filepath}")
+    plt.show()  # Blocks until the jointplot window is closed
+    plt.close(jp.fig)
+
+def plot_count_stemcellsource(df: pd.DataFrame) -> None:
+    """
+    Create a count plot for 'Stemcellsource'.
+    """
+    plt.figure(figsize=(6, 4))
+    sns.countplot(data=df, x='Stemcellsource')
+    plt.title('Count of Stem Cell Source')
+    save_plot("count_stemcellsource.png")
+
+# --- New Additional Useful Plots ---
+
+def plot_boxplot_cd34_by_recipientgender(df: pd.DataFrame) -> None:
+    """
+    Create a box plot for 'CD34kgx10d6' by 'Recipientgender'.
+    """
+    plt.figure(figsize=(6, 4))
+    sns.boxplot(data=df, x='Recipientgender', y='CD34kgx10d6')
+    plt.title('Boxplot of CD34+ Cell Dose by Recipient Gender')
+    save_plot("boxplot_cd34_by_recipientgender.png")
+
+def plot_bar_mean_cd34_by_stemcellsource(df: pd.DataFrame) -> None:
+    """
+    Create a bar plot for the mean 'CD34kgx10d6' by 'Stemcellsource'.
+    """
+    plt.figure(figsize=(6, 4))
+    sns.barplot(data=df, x='Stemcellsource', y='CD34kgx10d6', ci='sd')
+    plt.title('Mean CD34+ Cell Dose by Stem Cell Source')
+    save_plot("bar_mean_cd34_by_stemcellsource.png")
+
+def plot_swarm_donorage_by_disease(df: pd.DataFrame) -> None:
+    """
+    Create a swarm plot for 'Donorage' by 'Disease'.
+    """
+    plt.figure(figsize=(8, 4))
+    sns.swarmplot(data=df, x='Disease', y='Donorage')
+    plt.title('Swarm Plot of Donor Age by Disease')
+    plt.xticks(rotation=45, ha="right")
+    save_plot("swarm_donorage_by_disease.png")
+
 def main():
     csv_path = os.path.join("..", "data", "processed", "bmt_dataset.csv")
     df = load_data(csv_path)
     basic_info(df)
+    
+    # Existing plots
     plot_missing_values_heatmap(df)
     plot_missing_percentage(df)
     plot_correlation_matrix(df)
@@ -203,6 +252,16 @@ def main():
     plot_area(df)
     plot_pie_chart(df)
     plot_treemap(df)
+    
+    # Additional useful plots
+    plot_violin(df)
+    plot_jointplot(df)
+    plot_count_stemcellsource(df)
+    
+    # New additional useful plots
+    plot_boxplot_cd34_by_recipientgender(df)
+    plot_bar_mean_cd34_by_stemcellsource(df)
+    plot_swarm_donorage_by_disease(df)
 
 if __name__ == "__main__":
     main()
