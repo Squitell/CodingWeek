@@ -173,6 +173,7 @@ def plot_correlation_matrix(df: pd.DataFrame) -> None:
     plt.tight_layout()
     save_plot("correlation_matrix.png")
 
+# --- Additional Useful Plots ---
 
 def plot_violin(df: pd.DataFrame) -> None:
     """
@@ -196,18 +197,6 @@ def plot_jointplot(df: pd.DataFrame) -> None:
     plt.show()  # Blocks until the jointplot window is closed
     plt.close(jp.fig)
 
-def plot_pairplot(df: pd.DataFrame) -> None:
-    """
-    Create a pair plot for all numeric attributes.
-    """
-    pairplot = sns.pairplot(df.select_dtypes(include=[np.number]))
-    pairplot.fig.suptitle("Pair Plot of Numeric Attributes", y=1.02)
-    pairplot_filepath = os.path.join(plots_dir, "pairplot_numeric.png")
-    pairplot.fig.savefig(pairplot_filepath, bbox_inches="tight")
-    print(f"Plot saved to: {pairplot_filepath}")
-    plt.show()  # Blocks until the pairplot window is closed
-    plt.close(pairplot.fig)
-
 def plot_count_stemcellsource(df: pd.DataFrame) -> None:
     """
     Create a count plot for 'Stemcellsource'.
@@ -216,6 +205,8 @@ def plot_count_stemcellsource(df: pd.DataFrame) -> None:
     sns.countplot(data=df, x='Stemcellsource')
     plt.title('Count of Stem Cell Source')
     save_plot("count_stemcellsource.png")
+
+# --- New Additional Useful Plots ---
 
 def plot_boxplot_cd34_by_recipientgender(df: pd.DataFrame) -> None:
     """
@@ -261,10 +252,13 @@ def main():
     plot_area(df)
     plot_pie_chart(df)
     plot_treemap(df)
+    
+    # Additional useful plots
     plot_violin(df)
     plot_jointplot(df)
-    plot_pairplot(df)
     plot_count_stemcellsource(df)
+    
+    # New additional useful plots
     plot_boxplot_cd34_by_recipientgender(df)
     plot_bar_mean_cd34_by_stemcellsource(df)
     plot_swarm_donorage_by_disease(df)
