@@ -15,13 +15,13 @@ Ensure you are in the `Back_end` folder:
 ### ➤ 1.2 Create & Activate a Virtual Environment
 
         python -m venv .venv 
-        .venv/bin/activate
+        .venv\Scripts\Activate
 
 
 ### ➤ 1.3 Install Dependencies
 
         pip install -r requirements.txt
-        .venv/bin/activate
+        
 
 ### ➤ 1.4 Run the Backend Server
  
@@ -40,9 +40,10 @@ The frontend provides the user interface to input patient data and receive predi
     git clone https://github.com/AhmedTERRAF/CodingWeek_Grp8.git
 
 
-### ➤ 2.2 Navigate to the Frontend Directory
+### ➤ 2.2 Navigate to the Frontend platforme Directory
 
     cd Front_end
+    cd plateforme
 
 
 ### ➤ 2.3 Install Dependencies
@@ -54,6 +55,15 @@ The frontend provides the user interface to input patient data and receive predi
 
     npm start
 
+If you see a wrb page saying :
+        ### ❌ **1. Axios Module Not Found Error**
+        If you get this error when starting the frontend:
+        Module not found: Error: Can't resolve 'axios'
+
+Solution: Install axios by running:
+        cd Front_end/plateforme
+        npm install axios
+        npm start
 ✔️ The frontend should now be running at: **`http://localhost:3000`**  
 ✔️ Open your browser and go to **`http://localhost:3000`** to access the application.
 
