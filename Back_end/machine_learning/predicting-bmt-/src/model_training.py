@@ -22,25 +22,32 @@ def load_data(relative_path: str) -> pd.DataFrame:
 
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Ensure all categorical variables are one-hot encoded and remove highly correlated features.
+    Preprocess the data by:
+    1. One-hot encoding all categorical variables.
+    2. Removing highly correlated features (threshold > 0.9).
     """
+    df = df.copy()
+    
     # One-hot encode categorical variables
+    print("One-hot encoding categorical variables...")
     df = pd.get_dummies(df, drop_first=True)
     
-    # Remove highly correlated features (threshold > 0.9)
+    # Remove highly correlated features
+    print("Calculating correlation matrix for feature removal...")
     corr_matrix = df.corr().abs()
     upper_tri = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
     to_drop = [column for column in upper_tri.columns if any(upper_tri[column] > 0.9)]
-    
     if to_drop:
         print(f"Removing {len(to_drop)} highly correlated features: {to_drop}")
         df.drop(columns=to_drop, inplace=True)
-
+    else:
+        print("No highly correlated features found to remove.")
+        
     return df
 
-def plot_feature_importance(model, X, model_name, output_dir, top_n=20):
+def plot_feature_importance(model, X, model_name, output_dir, top_n=10):
     """
-    Plot and save feature importance for tree-based models.
+    Plot and save the top N feature importances for tree-based models.
     """
     if hasattr(model, "feature_importances_"):
         importances = model.feature_importances_
@@ -48,28 +55,30 @@ def plot_feature_importance(model, X, model_name, output_dir, top_n=20):
         sorted_idx = np.argsort(importances)[::-1]
 
         plt.figure(figsize=(10, 6))
-        sns.barplot(x=importances[sorted_idx][:top_n], y=[feature_names[i] for i in sorted_idx[:top_n]])
+        sns.barplot(x=importances[sorted_idx][:top_n], 
+                    y=[feature_names[i] for i in sorted_idx[:top_n]])
         plt.title(f"Top {top_n} Feature Importances - {model_name}")
         plt.xlabel("Importance")
         plt.ylabel("Feature")
         plt.tight_layout()
 
-        # Save plot
         os.makedirs(output_dir, exist_ok=True)
-        plt.savefig(os.path.join(output_dir, f"{model_name}_feature_importance.png"))
+        filepath = os.path.join(output_dir, f"{model_name}_feature_importance.png")
+        plt.savefig(filepath, bbox_inches="tight")
         plt.close()
-        print(f"Feature importance plot saved for {model_name}")
+        print(f"Feature importance plot saved for {model_name} to {filepath}")
+    else:
+        print(f"Model {model_name} does not support feature_importances_.")
 
 def train_models(X_train, y_train, X_val, y_val):
     """
     Train multiple models and evaluate them on training and validation sets.
     """
     models = {
-    "RandomForest": RandomForestClassifier(random_state=42),
-    "XGBoost": XGBClassifier(eval_metric="logloss", random_state=42),
-    "LightGBM": LGBMClassifier(random_state=42, min_child_samples=10, verbose=-1)
-}
-
+        "RandomForest": RandomForestClassifier(random_state=42),
+        "XGBoost": XGBClassifier(eval_metric="logloss", random_state=42),
+        "LightGBM": LGBMClassifier(random_state=42, min_child_samples=10, verbose=-1)
+    }
 
     trained_models = {}
     performance_results = {}
@@ -78,7 +87,7 @@ def train_models(X_train, y_train, X_val, y_val):
         print(f"\nTraining {name} on {X_train.shape[1]} features...")
         model.fit(X_train, y_train)
 
-        # Predictions
+        # Predictions on training and validation sets
         y_train_pred = model.predict(X_train)
         y_val_pred = model.predict(X_val)
 
@@ -86,10 +95,8 @@ def train_models(X_train, y_train, X_val, y_val):
         y_train_prob = model.predict_proba(X_train)[:, 1] if hasattr(model, "predict_proba") else None
         y_val_prob = model.predict_proba(X_val)[:, 1] if hasattr(model, "predict_proba") else None
 
-        # Metrics
         train_acc = accuracy_score(y_train, y_train_pred)
         val_acc = accuracy_score(y_val, y_val_pred)
-
         train_auc = roc_auc_score(y_train, y_train_prob) if y_train_prob is not None else 0.0
         val_auc = roc_auc_score(y_val, y_val_prob) if y_val_prob is not None else 0.0
 
@@ -97,7 +104,6 @@ def train_models(X_train, y_train, X_val, y_val):
         print(f"{name} Validation Accuracy: {val_acc:.4f}, ROC-AUC: {val_auc:.4f}")
         print(f"Validation Classification Report:\n{classification_report(y_val, y_val_pred)}")
 
-        # Store results
         performance_results[name] = {
             "Train Accuracy": train_acc, "Train ROC-AUC": train_auc,
             "Validation Accuracy": val_acc, "Validation ROC-AUC": val_auc
@@ -113,7 +119,6 @@ def save_models(models: dict, output_dir: str):
     """
     os.makedirs(output_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-
     for name, model in models.items():
         filename = os.path.join(output_dir, f"{name}_model_{timestamp}.pkl")
         joblib.dump(model, filename)
@@ -126,7 +131,7 @@ def save_performance(performance_results: dict, output_dir: str):
     os.makedirs(output_dir, exist_ok=True)
     performance_df = pd.DataFrame(performance_results).T
     performance_path = os.path.join(output_dir, "validation_performance.csv")
-    performance_df.to_csv(performance_path)
+    performance_df.to_csv(performance_path, index=True)
     print(f"📊 Validation performance saved to {performance_path}")
 
 def main():
@@ -139,21 +144,23 @@ def main():
     if "survival_status" not in df.columns:
         raise ValueError("❌ Target column 'survival_status' not found in training data.")
 
-    # Preprocess data
+    # Preprocess data (one-hot encode categorical features & remove correlated ones)
     df = preprocess_data(df)
+    print("Data shape after preprocessing:", df.shape)
 
     # Separate features and target
     X = df.drop(columns=["survival_status"])
     y = df["survival_status"]
+    print("Training data has", X.shape[1], "features.")
 
-    # Split into train (80%) and validation (20%)
+    # Split data into train (80%) and validation (20%) sets
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     print(f"Training set shape: {X_train.shape}, Validation set shape: {X_val.shape}")
 
     # Train models
     trained_models, performance_results = train_models(X_train, y_train, X_val, y_val)
 
-    # Save models with timestamps
+    # Save models
     script_dir = os.path.dirname(os.path.abspath(__file__))
     models_dir = os.path.join(script_dir, "..", "models")
     save_models(trained_models, models_dir)
@@ -165,7 +172,6 @@ def main():
     # Save feature importance plots
     plots_dir = os.path.join(script_dir, "..", "feature_importance_plots")
     os.makedirs(plots_dir, exist_ok=True)
-
     for name, model in trained_models.items():
         plot_feature_importance(model, X_train, name, plots_dir)
 

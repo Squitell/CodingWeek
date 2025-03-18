@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 # Load trained model
-model = joblib.load("XGBoost_model_20250313_0043.pkl")
+model = joblib.load("XGBoost_model_20250318_1312.pkl")
 
 # Define Input Schema (Must Match Form.js Exactly)
 class PatientData(BaseModel):
