@@ -65,13 +65,17 @@ disease_mapping = {
 
 @app.post("/predict")
 async def predict(data: PatientData):
-    
     disease_encoded = disease_mapping.get(data.Disease, -1)
-    
-    
-    feature_names = model.feature_names_in
 
-# Convert input to DataFrame with correct feature names
+    # Correctly retrieve the model's feature names without using 'or' on arrays.
+    if hasattr(model, "feature_names_in_"):
+        feature_names = model.feature_names_in_
+    elif hasattr(model, "feature_names_in"):
+        feature_names = model.feature_names_in
+    else:
+        return {"error": "Model does not have feature names attribute."}
+
+    # Convert input to DataFrame using the obtained feature names
     input_data = pd.DataFrame([[
         int(data.Recipientgender), int(data.Stemcellsource), float(data.Donorage), int(data.Donorage35),
         int(data.IIIV), int(data.Gendermatch), int(data.DonorABO), int(data.RecipientABO), int(data.RecipientRh),
@@ -79,8 +83,9 @@ async def predict(data: PatientData):
         int(data.Riskgroup), int(data.Txpostrelapse), int(data.Diseasegroup), int(data.HLAmatch),
         int(data.HLAmismatch), int(data.Antigen), int(data.Alel), float(data.Recipientage), int(data.Recipientage10),
         int(data.Relapse), int(data.aGvHDIIIIV), int(data.extcGvHD), float(data.CD34kgx10d6), float(data.CD3dCD34),
-        float(data.CD3dkgx10d8), float(data.Rbodymass), float(data.ANCrecovery), float(data.PLTrecovery), float(data.survival_time)
-          ]], columns=feature_names)
+        float(data.CD3dkgx10d8), float(data.Rbodymass), float(data.ANCrecovery), float(data.PLTrecovery),
+        float(data.survival_time)
+    ]], columns=feature_names)
 
     # Validate feature count
     expected_features = model.n_features_in_
@@ -89,28 +94,17 @@ async def predict(data: PatientData):
     if input_data.shape[1] != expected_features:
         return {"error": f"Expected {expected_features} features but received {input_data.shape[1]}"}
     
-    prediction_raw = model.predict(input_data)  # Get raw prediction
-    print(f"Raw Model Prediction: {prediction_raw}")  # Debugging
+    prediction_raw = model.predict(input_data)
+    print(f"Raw Model Prediction: {prediction_raw}")
 
-    
-    
-    
-    # ✅ Fix: Ensure proper integer conversion
-    prediction = int(prediction_raw[0])  # Ensure it's an integer
+    prediction = int(prediction_raw[0])
+    result = "Survive" if prediction == 1 else "Not Survive" if prediction == 0 else "❌ Error: Unexpected Prediction Value"
 
-    # ✅ Fix: Ensure correct interpretation of predictions
-    if prediction == 1:
-        result = "Survive"
-    elif prediction == 0:
-        result = "Not Survive"
-    else:
-        result = "❌ Error: Unexpected Prediction Value"
-
-    # Debugging output
-    print(f"🔮 Model Raw Prediction: {prediction_raw}")
-    print(f"✅ Final API Response: {result}")
+    print(f"Model Raw Prediction: {prediction_raw}")
+    print(f"Final API Response: {result}")
 
     return {"prediction": result}
+
     
     
 if __name__ == "__main__":
