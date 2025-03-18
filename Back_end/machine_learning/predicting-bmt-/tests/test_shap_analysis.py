@@ -171,9 +171,73 @@ def test_analyze_constant_features(capsys):
     assert "Found 2 constant columns" in captured or "constant" in captured.lower()
 
 # ----------------------------
+# Test end-to-end SHAP analysis
+
+def test_end_to_end_shap_analysis(tmp_path):
+    # 1. Create synthetic dataset with some known constant features
+    n_samples = 100
+    X = pd.DataFrame({
+        'constant_feature1': [1] * n_samples,
+        'variable_feature1': np.random.normal(0, 1, n_samples),
+        'variable_feature2': np.random.uniform(0, 1, n_samples),
+        'constant_feature2': [0] * n_samples,
+        'variable_feature3': np.random.choice(['A', 'B', 'C'], n_samples)
+    })
+
+    # 2. Create a dummy model that implements necessary interfaces
+    class EndToEndModel:
+        def __init__(self):
+            self.feature_names_in_ = X.columns.tolist()
+        
+        def predict(self, X):
+            return np.random.random(len(X))
+
+    # 3. Create test directories
+    test_model_dir = tmp_path / "models"
+    test_model_dir.mkdir()
+    output_dir = tmp_path / "shap_plots"
+    output_dir.mkdir()
+
+    # 4. Save dummy model
+    model = EndToEndModel()
+    model_path = test_model_dir / "DummyModel_model_latest.pkl"
+    joblib.dump(model, model_path)
+
+    # 5. Run constant features analysis
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        analyze_constant_features(X)
+    assert pytest_wrapped_e.type == SystemExit
+
+    # 6. Generate SHAP values
+    shap_values = np.random.random((n_samples, len(X.columns)))
+    shap_explanation = shap.Explanation(
+        values=shap_values,
+        base_values=np.zeros(n_samples),
+        data=X.values,
+        feature_names=X.columns.tolist()
+    )
+
+    # 7. Create all SHAP plots
+    create_shap_plots(X, model, "DummyModel", str(output_dir), shap_explanation)
+
+    # 8. Verify outputs
+    expected_files = [
+        "DummyModel_shap_summary.png",
+        "DummyModel_shap_bar.png",
+        "DummyModel_shap_beeswarm.png"
+    ]
+    
+    for file in expected_files:
+        file_path = output_dir / file
+        assert file_path.exists(), f"Expected output file {file} not found"
+        assert file_path.stat().st_size > 0, f"Output file {file} is empty"
+
+# ----------------------------
 # Optionally, you could test create_shap_plots as an integration test,
 # but it calls multiple internal functions. You can assume if the above functions pass,
 # then create_shap_plots works as intended.
 
 # ----------------------------
 # End of test_shap_analysis.py
+
+

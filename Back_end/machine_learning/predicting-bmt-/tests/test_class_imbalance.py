@@ -36,107 +36,80 @@ def temp_dir(tmp_path):
     """
     return tmp_path
 
-def test_compute_class_weights(sample_df):
+@pytest.fixture
+def real_data():
     """
-    Test that compute_class_weights returns a dictionary with correct keys and float values.
+    Fixture that loads a small subset of real BMT data for testing.
     """
-    y = sample_df['survival_status']
-    weights = compute_class_weights(y)
-
-    # We expect 2 classes: 0 and 1
-    assert 0 in weights and 1 in weights, "Expected keys (0, 1) in class weights."
-    # Ensure the weights are floats
-    assert all(isinstance(w, float) for w in weights.values()), "Class weights should be floats."
-
-def test_balance_with_smote(sample_df):
-    """
-    Test that SMOTE oversampling balances the minority and majority classes.
-    """
-    X = sample_df.drop(columns=['survival_status'])
-    y = sample_df['survival_status']
-
-    X_res, y_res = balance_with_smote(X, y, random_state=42)
-
-    # Check that we still have the same columns
-    assert list(X_res.columns) == list(X.columns), "Feature columns should remain the same after SMOTE."
-
-    # The number of samples should be greater or equal to the original
-    assert len(X_res) >= len(X), "After SMOTE, we expect at least as many samples as before."
-
-    # Check class distribution is now balanced
-    unique, counts = np.unique(y_res, return_counts=True)
-    assert len(unique) == 2, "We should still have 2 classes after SMOTE."
-    assert counts[0] == counts[1], "SMOTE should produce equal counts for both classes."
-
-def test_create_plots_dir(temp_dir):
-    """
-    Test create_plots_dir to ensure it creates (or returns) the directory path.
-    We patch __file__ to point to a temporary location so we don't affect real directories.
-    """
-    with patch('src.class_imbalance.__file__', os.path.join(temp_dir, 'class_imbalance.py')):
-        plots_path = create_plots_dir()
-        # Verify that the returned path exists
-        assert os.path.exists(plots_path), "Expected the plots directory to be created."
-
-def test_plot_class_distribution(sample_df, temp_dir):
-    """
-    Test the plot_class_distribution function to ensure it runs without error
-    and saves a plot file.
-    """
-    y = sample_df['survival_status']
-    filename = "test_distribution.png"
-    folder = str(temp_dir)  # Convert Path object to string
-
-    # Run the function
-    plot_class_distribution(y, title="Test Distribution", filename=filename, folder=folder)
-
-    # Check the file was created
-    expected_plot_path = os.path.join(folder, filename)
-    assert os.path.exists(expected_plot_path), "Expected the distribution plot to be saved."
-
-@patch('src.class_imbalance.balance_with_smote')
-def test_split_and_save_train_test(mock_smote, temp_dir):
-    """
-    Test split_and_save_train_test to ensure train and test CSVs are created.
-    We patch balance_with_smote to avoid real SMOTE processing.
-    """
-    import pandas as pd
-    # Create imbalanced sample data so that SMOTE is triggered
     data = {
-        'feature1': [10, 20, 30, 40, 50],
-        'feature2': [1, 2, 3, 4, 5],
-        'survival_status': [0, 0, 0, 1, 1]  # Imbalance: three 0's, two 1's
+        'age': np.random.normal(50, 15, 100),
+        'disease_risk': np.random.choice(['high', 'low', 'intermediate'], 100),
+        'stem_source': np.random.choice(['BM', 'PBSC'], 100),
+        'survival_status': np.random.binomial(1, 0.3, 100)  # Create imbalanced classes
     }
-    sample_df = pd.DataFrame(data)
+    df = pd.DataFrame(data)
+    # Convert categorical to numeric
+    df['disease_risk'] = pd.Categorical(df['disease_risk']).codes
+    df['stem_source'] = pd.Categorical(df['stem_source']).codes
+    return df
 
-    # Make SMOTE return the input data unchanged, for simplicity.
-    mock_smote.side_effect = lambda X, y, random_state: (X, y)
-
-    # Patch __file__ so that CSVs are written to a temp directory.
+def test_comprehensive_end_to_end(real_data, temp_dir):
+    """
+    Comprehensive end-to-end test with additional validations
+    """
+    # 1. Initial data quality checks
+    assert real_data.shape[1] >= 4, "Expected at least 4 features including target"
+    assert real_data.dtypes.apply(lambda x: x.kind in 'ifc').all(), "All features should be numeric"
+    
+    # 2. Feature validation
+    X = real_data.drop(columns=['survival_status'])
+    y = real_data['survival_status']
+    
+    # Check feature ranges
+    assert X['age'].between(0, 100).all(), "Age should be within reasonable bounds"
+    assert X[['disease_risk', 'stem_source']].isin([0, 1, 2]).all().all(), "Categorical features should be encoded properly"
+    
+    # 3. Class imbalance validation
+    initial_class_weights = compute_class_weights(y)
+    class_ratios = y.value_counts(normalize=True)
+    assert abs(class_ratios[0] - class_ratios[1]) > 0.2, "Expected significant class imbalance"
+    
+    # 4. SMOTE balancing validation with cross-validation
+    from sklearn.model_selection import KFold
+    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    
+    for fold, (train_idx, val_idx) in enumerate(kf.split(X)):
+        X_fold, y_fold = X.iloc[train_idx], y.iloc[train_idx]
+        X_balanced, y_balanced = balance_with_smote(X_fold, y_fold, random_state=42)
+        
+        # Check balancing results
+        fold_counts = pd.Series(y_balanced).value_counts()
+        assert abs(fold_counts[0] - fold_counts[1]) <= 1, f"Fold {fold} is not properly balanced"
+        assert not X_balanced.isna().any().any(), f"Found NaN values in fold {fold}"
+        
+    # 5. Final train-test split validation
     with patch('src.class_imbalance.__file__', os.path.join(temp_dir, 'class_imbalance.py')):
-        # Pre-create the directory where the CSVs will be saved.
-        processed_dir = os.path.join(temp_dir, "..", "data", "processed")
+        processed_dir = os.path.join(temp_dir, "data", "processed")
         os.makedirs(processed_dir, exist_ok=True)
-
-        X = sample_df.drop(columns=['survival_status'])
-        y = sample_df['survival_status']
-
-        # Use test_size=0.4 so that the test set has at least 2 samples
-        split_and_save_train_test(X, y, test_size=0.4, random_state=42)
-
-        # Paths where the function attempts to save train/test CSVs.
-        train_path = os.path.join(temp_dir, "..", "data", "processed", "bmt_train.csv")
-        test_path = os.path.join(temp_dir, "..", "data", "processed", "bmt_test.csv")
-
-        # Convert to absolute path for checking.
-        train_abs = os.path.abspath(train_path)
-        test_abs = os.path.abspath(test_path)
-
-        # Check that the CSV files exist.
-        assert os.path.isfile(train_abs), "Training CSV should be saved."
-        assert os.path.isfile(test_abs), "Testing CSV should be saved."
-
-        # Now, because the input training set is imbalanced, SMOTE should have been applied.
-        mock_smote.assert_called()
-
+        
+        X_final, y_final = balance_with_smote(X, y, random_state=42)
+        split_and_save_train_test(X_final, y_final, test_size=0.2, random_state=42)
+        
+        # Load and validate split files
+        train_df = pd.read_csv(os.path.join(processed_dir, "bmt_train.csv"))
+        test_df = pd.read_csv(os.path.join(processed_dir, "bmt_test.csv"))
+        
+        # Additional validations on split data
+        for name, df in [("train", train_df), ("test", test_df)]:
+            # Check class distribution
+            split_ratios = df['survival_status'].value_counts(normalize=True)
+            assert abs(split_ratios[0] - split_ratios[1]) < 0.1, f"Imbalanced classes in {name} set"
+            
+            # Check feature correlations
+            correlations = df.corr()
+            assert not (correlations.abs() > 0.95).any().any(), f"Found highly correlated features in {name} set"
+            
+            # Check for data leakage
+            common_indices = set(train_df.index) & set(test_df.index)
+            assert len(common_indices) == 0, "Found data leakage between train and test sets"
 

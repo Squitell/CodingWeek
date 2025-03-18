@@ -150,7 +150,6 @@ def test_train_models():
     for metrics in performance_results.values():
         assert expected_metric_keys.issubset(metrics.keys()), "Missing expected performance metrics."
 
-
 # ----------------------------
 # Test save_models
 
@@ -204,6 +203,78 @@ def test_save_performance(tmp_path):
     # Check that the DataFrame contains the keys from performance_results.
     for key in performance_results.keys():
         assert key in df_perf.index, f"Performance metrics for {key} not found in CSV."
+
+# ----------------------------
+# End-to-end test
+
+def test_end_to_end_model_training(tmp_path):
+    """
+    Test the complete model training pipeline from data loading to model saving.
+    """
+    # Create a realistic dummy dataset
+    df_original = pd.DataFrame({
+        'survival_status': [0, 1, 0, 1, 0, 1, 0, 1] * 10,
+        'age': np.random.normal(50, 15, 80),
+        'gender': np.random.choice(['M', 'F'], 80),
+        'disease_type': np.random.choice(['A', 'B', 'C'], 80),
+        'white_blood_cells': np.random.normal(7000, 2000, 80),
+        'platelets': np.random.normal(250000, 50000, 80),
+        'hemoglobin': np.random.normal(12, 2, 80)
+    })
+    
+    # Create directories for outputs
+    data_dir = tmp_path / "data"
+    models_dir = tmp_path / "models"
+    plots_dir = tmp_path / "plots"
+    performance_dir = tmp_path / "performance"
+    
+    for dir_path in [data_dir, models_dir, plots_dir, performance_dir]:
+        dir_path.mkdir(parents=True)
+    
+    # Save dummy data
+    train_file = data_dir / "train.csv"
+    df_original.to_csv(train_file, index=False)
+    
+    # Patch __file__ for relative path computation
+    from src import model_training
+    original_file = model_training.__file__
+    try:
+        model_training.__file__ = str(tmp_path / "model_training.py")
+        
+        # Execute complete pipeline
+        df = load_data(str(train_file))
+        X = preprocess_data(df)
+        y = df['survival_status']
+        
+        # Split data
+        from sklearn.model_selection import train_test_split
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y
+        )
+        
+        # Train models and get performance
+        trained_models, performance_results = train_models(X_train, y_train, X_val, y_val)
+        
+        # Save everything
+        for model_name, model in trained_models.items():
+            plot_feature_importance(model, X, model_name, str(plots_dir))
+        
+        save_models(trained_models, str(models_dir))
+        save_performance(performance_results, str(performance_dir))
+        
+        # Verify results
+        assert len(list(models_dir.glob("*.pkl"))) == 3, "Expected 3 model files"
+        assert len(list(plots_dir.glob("*.png"))) == 3, "Expected 3 feature importance plots"
+        assert (performance_dir / "validation_performance.csv").exists(), "Performance file not created"
+        
+        # Check performance metrics
+        perf_df = pd.read_csv(performance_dir / "validation_performance.csv", index_col=0)
+        for model_name in ['RandomForest', 'XGBoost', 'LightGBM']:
+            assert model_name in perf_df.index, f"Missing performance for {model_name}"
+            assert all(perf_df.loc[model_name] > 0.5), f"Poor performance for {model_name}"
+            
+    finally:
+        model_training.__file__ = original_file
 
 # ----------------------------
 # End of test_model_training.py
